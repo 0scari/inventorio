@@ -16,7 +16,7 @@ module.exports.create = async(resource) => {
 
 module.exports.read = async(id) => {
     try {
-        return Store.find({storeId: id})
+        return Store.find({StoreId: id})
     } catch (e) {
         throw new CRUDError('READ', e)
     }

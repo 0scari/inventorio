@@ -9,13 +9,11 @@ router.get('/resource/:id', async(req, res) => {
 })
 
 router.post('/resource', async(req, res) => {
-    let result
     try {
-        result = await storeService.save(null)
+        await storeService.save(req.body.value)
     } catch (e) {
-        result = {errors: [e]}
+        res.status(status.INTERNAL_SERVER_ERROR).send({message: "Please contact support", error: e})
     }
-    await storeService.save(null)
     res.status(status.CREATED).send()
 })
 

@@ -6,8 +6,7 @@ const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
 
 module.exports = new Schema({
-    storeId: { type: Number, index: true},
-    strField: String,
-    numField: Number,
-    date: { type: Date, default: Date.now }
-})
+        StoreId: { type: Number, index: true}
+    },
+    { strict: false }
+)
