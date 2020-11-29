@@ -17,8 +17,12 @@ module.exports.create = async (resource) => {
 module.exports.read = async (id) => {
     try {
         const model = await Store.findOne({StoreId: id})
-        // findOne returns Model.Store object, and because schema is non-strict: must extract wrapped doc
-        return model._doc
+        if (model) {
+            // findOne returns Model.Store object, and because schema is non-strict: must extract wrapped doc
+            return model._doc
+        } else {
+            return null
+        }
     } catch (e) {
         throw new CRUDError('READ', e)
     }

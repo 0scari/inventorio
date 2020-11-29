@@ -5,7 +5,16 @@ const status = require('http-status-codes')
 const storeService = require('../../domain/services/store-service')
 
 router.get('/store/:id', async(req, res) => {
-    res.status(status.OK).send(await storeService.get(req.params.id))
+    try {
+        const result = await storeService.get(req.params.id)
+        if (result) {
+            res.status(status.OK).send(result)
+        } else {
+            res.status(status.NOT_FOUND).send()
+        }
+    } catch (e) {
+        processError(e, res)
+    }
 })
 
 router.post('/store', async(req, res) => {
@@ -19,11 +28,16 @@ router.post('/store', async(req, res) => {
 
 router.put('/store', async(req, res) => {
     try {
-        await storeService.update(req.body.value)
+        let store = await storeRepo.read(req.body.value.StoreId)
+        if (!store) {
+            res.status(status.NOT_FOUND).send()
+        } else {
+            await storeService.update()
+            res.status(status.OK).send()
+        }
     } catch (e) {
         processError(e, res)
     }
-    res.status(status.OK).send()
 })
 
 router.delete('/resource/:id', async(req, res) => {

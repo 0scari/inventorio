@@ -3,10 +3,9 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
-const ObjectId = Schema.ObjectId
 
 module.exports = new Schema({
         StoreId: { type: Number, index: true}
     },
-    { strict: false }
+    { strict: false, versionKey: false }
 )

@@ -16,8 +16,7 @@ module.exports.get = async (id) => storeRepo.read(id)
 
 module.exports.delete = async id => 'deleted'
 
-module.exports.update = async resource => {
-    const existingInventory = await storeRepo.read(resource.StoreId)
+module.exports.update = async existingInventory => {
     const newInventory = processInventory(
         existingInventory,
         optional(resource.Delivery).or([]),
