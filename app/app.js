@@ -5,29 +5,44 @@ const express = require('express')
 const path = require('path')
 const logger = require('morgan')
 const db = require('./persistance/database')
+const validationMiddleware = require('./rest/validation/middleware')
 
-module.exports = db.connect('127.0.0.1', 27017, "inventory").then(async () => {
-    console.debug("Successfully connected to DB")
-    
-    const app = express()
-    app.use(logger('dev'))
-    app.use(express.json())
-    app.use(express.urlencoded({ extended: false }))
+const appPort = process.env.PORT || 3000
+const dbPort = process.env.PORT || 27017
+const app = express()
 
-    const middleware = require('./rest/middleware')
-    app.use(middleware)
+module.exports = db.connect('127.0.0.1', dbPort, "store")
+    .then(async () => {
+        console.info("Successfully connected to DB")
 
-    app.use((req, res, next) => {
-        res.header('Access-Control-Allow-Origin', '*')
-        res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-        next()
+        app.use(logger('dev'))
+        app.use(express.json())
+        app.use(validationMiddleware)
+        app.use((req, res, next) => {
+            res.header('Access-Control-Allow-Origin', '*')
+            res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
+            next()
+        })
+        app.use('/', require('./rest/controllers/routes'))
+
+        const server = app.listen(appPort, () => {
+                console.info(`Example app listening on port ${appPort}`)
+                debug('Listening on ' + appPort)
+            }
+        )
+        await initShutdownHook(server)
     })
+    .catch((error) => {
+        console.error(`DB connection failed \n ${error}`)
+    }
+)
 
-    app.use('/', require('./rest/controllers/controller'))
-    const port = process.env.PORT || '3000'
-    app.listen(port, () => {
-            console.log(`Example app listening on port ${port}!`)
-            debug('Listening on ' + port)
-        }
-    );
-});
+async function initShutdownHook(server) {
+    process.on('SIGTERM', () => {
+        console.debug('SIGTERM signal received.');
+        console.debug('Closing http server.');
+        server.close(() => {
+            console.info('Http server closed.');
+        })
+        db.disconnect()})
+}

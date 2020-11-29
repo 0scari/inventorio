@@ -1,25 +1,23 @@
 'use strict'
 
-const express = require('express')
-const router = express.Router()
+const router = require('express').Router()
 const status = require('http-status-codes')
-const service = require('../../domain/services/service')
+const storeService = require('../../domain/services/store-service')
 
 router.get('/resource/:id', async(req, res) => {
-    res.status(status.OK).send(await service.get(req.params.id))
+    res.status(status.OK).send(await storeService.get(req.params.id))
 })
 
 router.post('/resource', async(req, res) => {
-    res.status(status.CREATED).send(await service.save(null))
+    res.status(status.CREATED).send(await storeService.save(null))
 })
 
 router.put('/resource/:id', async(req, res) => {
     res.status(status.OK).send()
-
 })
 
 router.delete('/resource/:id', async(req, res) => {
-    await service.delete(req.params.id)
+    await storeService.delete(req.params.id)
     res.status(status.OK).send()
 })
 

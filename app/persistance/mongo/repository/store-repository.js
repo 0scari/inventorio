@@ -1,14 +1,14 @@
 'use strict'
 
 const mongoose = require('mongoose')
-const schema = require('../schema/resource')
+const schema = require('../schema/store')
 const CRUDError = require('../../exception/mongo-crud-exception')
 
-let Resource = mongoose.model('Resource', schema)
+let Store = mongoose.model('Store', schema)
 
 module.exports.create = async (resource) => {
     try {
-        await new Resource(resource).save()
+        await new Store(resource).save()
     } catch (e) {
         throw new CRUDError("CREATE", e)
     }
@@ -16,7 +16,7 @@ module.exports.create = async (resource) => {
 
 module.exports.read = async (id) => {
     try {
-        return Resource.find({storeId: id})
+        return Store.find({storeId: id})
     } catch (e) {
         throw new CRUDError("READ", e)
     }
