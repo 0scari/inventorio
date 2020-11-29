@@ -2,24 +2,32 @@
 
 const storeRepo = require('../../persistance/mongo/repository/store-repository')
 
-module.exports.save = async(resource) => {
-    const inventory = buildInventoryList(
+module.exports.save = async (resource) => {
+    const inventory = processInventory(
+        {StoreId: resource.StoreId},
         optional(resource.Delivery).or([]),
         optional(resource.Sale).or([]),
         optional(resource.Refund).or([])
     )
-    inventory.StoreId = resource.StoreId
-    storeRepo.create(inventory)
+    await storeRepo.create(inventory)
 }
 
-module.exports.get = async(id) => storeRepo.read(id)
+module.exports.get = async (id) => storeRepo.read(id)
 
 module.exports.delete = async id => 'deleted'
 
-module.exports.update = async resource => storeRepo.update(resource)
+module.exports.update = async resource => {
+    const existingInventory = await storeRepo.read(resource.StoreId)
+    const newInventory = processInventory(
+        existingInventory,
+        optional(resource.Delivery).or([]),
+        optional(resource.Sale).or([]),
+        optional(resource.Refund).or([])
+    )
+    await storeRepo.update(newInventory)
+}
 
-function buildInventoryList(deliveredInventory, soldInventory, refundedInventory) {
-    const inventory = {}
+function processInventory(inventory, deliveredInventory, soldInventory, refundedInventory) {
     // additive activities must go first
     addInventory(deliveredInventory, inventory)
     addInventory(refundedInventory, inventory)
@@ -28,14 +36,14 @@ function buildInventoryList(deliveredInventory, soldInventory, refundedInventory
 }
 
 function addInventory(updatedInventory, existingInventory) {
-    processInventory(
+    calculateInventory(
         updatedInventory,
         existingInventory,
         (inventory, currQuant, newQuant) => currQuant + newQuant)
 }
 
 function removeInventory(updatedInventory, existingInventory) {
-    processInventory(
+    calculateInventory(
         updatedInventory,
         existingInventory,
         (inventory, currQuant, newQuant) => {
@@ -47,7 +55,7 @@ function removeInventory(updatedInventory, existingInventory) {
     })
 }
 
-function processInventory(updatedInventory, existingInventory, math) {
+function calculateInventory(updatedInventory, existingInventory, math) {
     updatedInventory.forEach(update => {
         const inventoryItem = existingInventory[update.ItemName]
         if (inventoryItem) {
