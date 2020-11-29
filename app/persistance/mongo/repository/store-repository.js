@@ -36,8 +36,8 @@ module.exports.update = async (resource) => {
     }
 }
 
-module.exports.delete = async (id) => {
-    collection.remove
+module.exports.delete = async (resource) => {
+    await Store.deleteOne({StoreId: resource.StoreId})
 }
 
 async function upsert(resource) {

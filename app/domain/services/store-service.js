@@ -14,7 +14,7 @@ module.exports.save = async (resource) => {
 
 module.exports.get = async (id) => storeRepo.read(id)
 
-module.exports.delete = async id => 'deleted'
+module.exports.delete = async (resource) => storeRepo.delete(resource)
 
 module.exports.update = async existingInventory => {
     const newInventory = processInventory(

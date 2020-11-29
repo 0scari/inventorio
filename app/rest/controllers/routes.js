@@ -6,9 +6,23 @@ const storeService = require('../../domain/services/store-service')
 
 router.get('/store/:id', async(req, res) => {
     try {
-        const result = await storeService.get(req.params.id)
-        if (result) {
-            res.status(status.OK).send(result)
+        const store = await storeService.get(req.params.id)
+        if (store) {
+            res.status(status.OK).send(store)
+        } else {
+            res.status(status.NOT_FOUND).send()
+        }
+    } catch (e) {
+        processError(e, res)
+    }
+})
+
+router.delete('/store/:id', async(req, res) => {
+    try {
+        const store = await storeService.get(req.params.id)
+        if (store) {
+            await storeService.delete(store)
+            res.status(status.OK).send(store)
         } else {
             res.status(status.NOT_FOUND).send()
         }
@@ -38,11 +52,6 @@ router.put('/store', async(req, res) => {
     } catch (e) {
         processError(e, res)
     }
-})
-
-router.delete('/resource/:id', async(req, res) => {
-    await storeService.delete(req.params.id)
-    res.status(status.OK).send()
 })
 
 function processError(error, res) {
