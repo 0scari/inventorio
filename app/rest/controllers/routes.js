@@ -9,7 +9,14 @@ router.get('/resource/:id', async(req, res) => {
 })
 
 router.post('/resource', async(req, res) => {
-    res.status(status.CREATED).send(await storeService.save(null))
+    let result
+    try {
+        result = await storeService.save(null)
+    } catch (e) {
+        result = {errors: [e]}
+    }
+    await storeService.save(null)
+    res.status(status.CREATED).send()
 })
 
 router.put('/resource/:id', async(req, res) => {

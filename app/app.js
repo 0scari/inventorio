@@ -11,9 +11,9 @@ const appPort = process.env.PORT || 3000
 const dbPort = process.env.PORT || 27017
 const app = express()
 
-module.exports = db.connect('127.0.0.1', dbPort, "store")
-    .then(async () => {
-        console.info("Successfully connected to DB")
+module.exports = db.connect('127.0.0.1', dbPort, 'store')
+    .then(async() => {
+        console.info('Successfully connected to DB')
 
         app.use(logger('dev'))
         app.use(express.json())
@@ -39,10 +39,11 @@ module.exports = db.connect('127.0.0.1', dbPort, "store")
 
 async function initShutdownHook(server) {
     process.on('SIGTERM', () => {
-        console.debug('SIGTERM signal received.');
-        console.debug('Closing http server.');
+        console.debug('SIGTERM signal received.')
+        console.debug('Closing http server.')
         server.close(() => {
-            console.info('Http server closed.');
+            console.info('Http server closed.')
         })
-        db.disconnect()})
+        db.disconnect()
+})
 }
