@@ -10,7 +10,7 @@ router.get('/resource/:id', async(req, res) => {
 })
 
 router.post('/resource', async(req, res) => {
-    res.status(status.CREATED).header('Content-Type', 'application/json').send('Huston, got a problem!')
+    res.status(status.CREATED).send(await service.save(null))
 })
 
 router.put('/resource/:id', async(req, res) => {

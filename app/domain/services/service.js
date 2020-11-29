@@ -1,10 +1,9 @@
 'use strict'
 
-const db = require('../../persistance/db')
+const repo = require('../../persistance/mongo/repository/repository')
 
-module.exports.store = async(playlist) => 'stored'
+module.exports.save = async(resource) => repo.create({storeId: 123, strField: "String value"})
 
-module.exports.get = async(id) => 'Resource ' + id
+module.exports.get = async(id) => repo.read(id)
 
 module.exports.delete = async id => 'deleted'
-

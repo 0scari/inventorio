@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-    title: 'string(1,25)',
-    fileName: String,
-    playlistId: 'numeric(1,)'
+    id: 'string(1,25)',
+    strField: String,
+    numField: 'numeric(1,)'
 }
