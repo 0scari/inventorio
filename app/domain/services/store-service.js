@@ -18,42 +18,48 @@ module.exports.delete = async id => 'deleted'
 
 module.exports.update = async resource => storeRepo.update(resource)
 
-function buildInventoryList(deliveries, sales, refunds) {
+function buildInventoryList(deliveredInventory, soldInventory, refundedInventory) {
     const inventory = {}
     // additive activities must go first
-    processAdditionActivities(deliveries, inventory)
-    processAdditionActivities(refunds, inventory)
-    processDeductionActivities(sales, inventory)
+    addInventory(deliveredInventory, inventory)
+    addInventory(refundedInventory, inventory)
+    removeInventory(soldInventory, inventory)
     return inventory
 }
 
-function processAdditionActivities(activities, inventory) {
-    process(activities, inventory, (item, currQuant, newQuant) => currQuant + newQuant)
+function addInventory(updatedInventory, existingInventory) {
+    processInventory(
+        updatedInventory,
+        existingInventory,
+        (inventory, currQuant, newQuant) => currQuant + newQuant)
 }
 
-function processDeductionActivities(activities, inventory) {
-    process(activities, inventory, (item, currQuant, newQuant) => {
+function removeInventory(updatedInventory, existingInventory) {
+    processInventory(
+        updatedInventory,
+        existingInventory,
+        (inventory, currQuant, newQuant) => {
         const result = currQuant - newQuant
         if (result < 0) {
-            console.warn(`Encountered negative inventory {$item} = {$result}`)
+            console.warn(`Encountered negative inventory ${inventory} = ${result}`)
         }
         return result
     })
 }
 
-function process(activities, inventory, math) {
-    activities.forEach(activityInventory => {
-        const inventoryItem = inventory[activityInventory.ItemName]
+function processInventory(updatedInventory, existingInventory, math) {
+    updatedInventory.forEach(update => {
+        const inventoryItem = existingInventory[update.ItemName]
         if (inventoryItem) {
-            inventoryItem.Quantity = math(inventoryItem.ItemName, inventoryItem.Quantity, activityInventory.Quantity)
+            inventoryItem.Quantity = math(inventoryItem.ItemName, inventoryItem.Quantity, update.Quantity)
         } else {
-            addNewInventory(inventory, activityInventory)
+            addNewInventory(existingInventory, update)
         }
     })
 }
 
-function addNewInventory(inventory, item) {
-    inventory[item.ItemName] = {"ItemId": item.ItemId, "Quantity": item.Quantity}
+function addNewInventory(inventoryList, item) {
+    inventoryList[item.ItemName] = {"ItemId": item.ItemId, "Quantity": item.Quantity}
 }
 
 function optional(obj) {
