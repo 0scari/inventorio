@@ -14,6 +14,9 @@
 #### `POST /store`
 
 **Request**  'Content-Type', 'application/json'
+
+*❗️Sorry, for the red spaces, they are leftovers from encoded characters that were provided in examples of the assignment .docx. By now i have run out of time to clean them.*
+
 ``` json
 {
         "StoreId": 99305,
