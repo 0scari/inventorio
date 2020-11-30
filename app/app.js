@@ -2,7 +2,6 @@
 
 const debug = require('debug')('pozdnako:server')
 const express = require('express')
-const path = require('path')
 const logger = require('morgan')
 const db = require('./persistance/database')
 const validationMiddleware = require('./rest/validation/validation-middleware')
@@ -23,7 +22,7 @@ module.exports = db.connect('127.0.0.1', dbPort, 'store')
             res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
             next()
         })
-        app.use('/', require('./rest/controllers/routes'))
+        app.use('/', require('./rest/route/store-routes'))
 
         const server = app.listen(appPort, () => {
                 console.info(`Example app listening on port ${appPort}`)
