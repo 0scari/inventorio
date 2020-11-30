@@ -11,7 +11,7 @@
 
 ## API Examples
 
-####`POST /store`
+#### `POST /store`
 
 **Request**  'Content-Type', 'application/json'
 ``` json
