@@ -2,7 +2,7 @@
 
 const storeRepo = require('../../persistance/mongo/repository/store-repository')
 
-module.exports.save = async (resource) => {
+module.exports.save = async(resource) => {
     const inventory = processInventory(
         {StoreId: resource.StoreId},
         optional(resource.Delivery).or([]),
@@ -12,19 +12,21 @@ module.exports.save = async (resource) => {
     await storeRepo.create(inventory)
 }
 
-module.exports.get = async (id) => storeRepo.read(id)
+module.exports.get = async(id) => storeRepo.read(id)
 
-module.exports.delete = async (resource) => storeRepo.delete(resource)
+module.exports.delete = async(resource) => storeRepo.delete(resource)
 
-module.exports.update = async existingInventory => {
+module.exports.update = async (updatedInventory, existingInventory) => {
     const newInventory = processInventory(
         existingInventory,
-        optional(resource.Delivery).or([]),
-        optional(resource.Sale).or([]),
-        optional(resource.Refund).or([])
+        optional(updatedInventory.Delivery).or([]),
+        optional(updatedInventory.Sale).or([]),
+        optional(updatedInventory.Refund).or([])
     )
     await storeRepo.update(newInventory)
 }
+
+//// Helpers
 
 function processInventory(inventory, deliveredInventory, soldInventory, refundedInventory) {
     // additive activities must go first
@@ -66,11 +68,13 @@ function calculateInventory(updatedInventory, existingInventory, math) {
 }
 
 function addNewInventory(inventoryList, item) {
-    inventoryList[item.ItemName] = {"ItemId": item.ItemId, "Quantity": item.Quantity}
+    inventoryList[item.ItemName] = {'ItemId': item.ItemId, 'Quantity': item.Quantity}
 }
 
 function optional(obj) {
-    function or(alt) {return obj ? obj : alt}
+    function or(alt) {
+return obj ? obj : alt
+}
     return {or: or}
 }
 

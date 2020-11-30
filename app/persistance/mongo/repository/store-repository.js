@@ -6,7 +6,7 @@ const CRUDError = require('../../exception/mongo-crud-exception')
 
 const Store = mongoose.model('Store', schema)
 
-module.exports.create = async (resource) => {
+module.exports.create = async(resource) => {
     try {
         await upsert(resource)
     } catch (e) {
@@ -14,7 +14,7 @@ module.exports.create = async (resource) => {
     }
 }
 
-module.exports.read = async (id) => {
+module.exports.read = async(id) => {
     try {
         const model = await Store.findOne({StoreId: id})
         if (model) {
@@ -28,7 +28,7 @@ module.exports.read = async (id) => {
     }
 }
 
-module.exports.update = async (resource) => {
+module.exports.update = async(resource) => {
     try {
         await upsert(resource)
     } catch (e) {
@@ -36,12 +36,12 @@ module.exports.update = async (resource) => {
     }
 }
 
-module.exports.delete = async (resource) => {
+module.exports.delete = async(resource) => {
     await Store.deleteOne({StoreId: resource.StoreId})
 }
 
 async function upsert(resource) {
-    let query = {'StoreId': resource.StoreId};
+    const query = {'StoreId': resource.StoreId}
 
     await Store.findOneAndUpdate(query, resource, {upsert: true})
     console.debug(`Upserted ${resource.StoreId}`)

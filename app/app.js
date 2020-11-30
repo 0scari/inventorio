@@ -5,7 +5,7 @@ const express = require('express')
 const path = require('path')
 const logger = require('morgan')
 const db = require('./persistance/database')
-const validationMiddleware = require('./rest/validation/middleware')
+const validationMiddleware = require('./rest/validation/validation-middleware')
 
 const appPort = process.env.PORT || 3000
 const dbPort = process.env.PORT || 27017
@@ -45,5 +45,5 @@ async function initShutdownHook(server) {
             console.info('Http server closed.')
         })
         db.disconnect()
-})
+    })
 }
