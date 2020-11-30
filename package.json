@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "tests": "jest --coverage --runInBand",
-    "start": " node --inspect=0.0.0.0 app/bin/www"
+    "start": " node --inspect=0.0.0.0 app/app.js"
   },
   "jest": {
     "testEnvironment": "node",

@@ -22,7 +22,7 @@ router.delete('/store/:id', async(req, res) => {
         const store = await storeService.get(req.params.id)
         if (store) {
             await storeService.delete(store)
-            res.status(status.OK).send(store)
+            res.status(status.OK).send()
         } else {
             res.status(status.NOT_FOUND).send()
         }
