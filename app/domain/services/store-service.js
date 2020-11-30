@@ -40,7 +40,8 @@ function addInventory(updatedInventory, existingInventory) {
     calculateInventory(
         updatedInventory,
         existingInventory,
-        (inventory, currQuant, newQuant) => currQuant + newQuant)
+        (inventory, currQuant, newQuant) => currQuant + newQuant
+    )
 }
 
 function removeInventory(updatedInventory, existingInventory) {
@@ -48,12 +49,13 @@ function removeInventory(updatedInventory, existingInventory) {
         updatedInventory,
         existingInventory,
         (inventory, currQuant, newQuant) => {
-        const result = currQuant - newQuant
-        if (result < 0) {
-            console.warn(`Encountered negative inventory ${inventory} = ${result}`)
+            const result = currQuant - newQuant
+            if (result < 0) {
+                console.warn(`Encountered negative inventory ${inventory} = ${result}`)
+            }
+            return result
         }
-        return result
-    })
+    )
 }
 
 function calculateInventory(updatedInventory, existingInventory, math) {
@@ -73,8 +75,8 @@ function addNewInventory(inventoryList, item) {
 
 function optional(obj) {
     function or(alt) {
-return obj ? obj : alt
-}
+        return obj ? obj : alt
+    }
     return {or: or}
 }
 
